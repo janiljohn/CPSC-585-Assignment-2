@@ -12,14 +12,19 @@ def mlp(xTrain, xTest, yTrain, yTest, iNeurons: int = 2, oNeurons: int = 1):
 	w2 = np.array([0.5]*iNeurons)
 	b1 = np.array([0.5]*iNeurons)
 	b2 = np.array([0.5]*oNeurons)
-	f = lambda x: 1.0/(1.0 + np.exp(-x))
+
+	# Activation
+	activation_function = lambda x: 1.0/(1.0 + np.exp(-x))
+
 	for i in range(xTrain.shape[1]):
-		h1 = f(np.dot(w1.T, xTrain[i]) + b1)  # dot product of w1 with x, then adding b1
+		h1 = activation_function(np.dot(w1.T, xTrain[i]) + b1)  # dot product of w1 with x, then adding b1
 		# Assuming the output layer is directly connected to the first hidden layer
-		yhat = f(np.dot(w2, h1) + b2)  # dot product of w2 with h1, then adding b2
+		yhat = activation_function(np.dot(w2, h1) + b2)  # dot product of w2 with h1, then adding b2
 		# Computing the loss
 		loss = np.square(y - yhat)  # Squared error loss
 		print(yhat, loss)
+		# Check the result of y
+		# 	If theres an error we backpropogate
 	
 
 def contains_not(text):
@@ -31,8 +36,9 @@ def contains_security(text):
 if __name__ == "__main__":
 	dataset = pd.read_csv('emails.csv', encoding='ISO-8859-1')
 	feature_functions = [contains_not, contains_security]
-	X_featureless, feature_names = bag_of_wordsify(dataset=dataset,feature_functions=[], max_token_features=50)
 	X, feature_names = bag_of_wordsify(dataset=dataset,feature_functions=feature_functions, max_token_features=50)
+
+	X
 
 	y = dataset['spam']
 
