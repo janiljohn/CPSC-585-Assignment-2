@@ -19,7 +19,7 @@ def _hiddenLayer_error(w2, output_error, h1):
     hidden_error = output_error * w2 * derivative_h1
     return hidden_error
 
-def mlp(xTrain, xTest, yTrain, yTest, iNeurons: int = 2, oNeurons: int = 1, epochs: int = 100, threshold: float = 0.00001):
+def mlp(xTrain, xTest, yTrain, yTest, iNeurons: int = 2, oNeurons: int = 1, epochs: int = 1, threshold: float = 0.00001):
 	temp = []
 	for i in range(xTrain.shape[1]):
 		temp.append([0.5]*iNeurons)
@@ -77,9 +77,9 @@ def mlp(xTrain, xTest, yTrain, yTest, iNeurons: int = 2, oNeurons: int = 1, epoc
 		last_loss = total_loss
 		print(f"\rEpoch {epoch}, Delta Loss: {delta_loss}",end="")
 
-		# if delta_loss > last_delta_loss:
-		# 	print("Loss below threshold, stopping training.")
-		# 	break
+		if delta_loss > last_delta_loss:
+			print("Loss below threshold, stopping training.")
+			break
 
 	print()
 	# After the training phase:
