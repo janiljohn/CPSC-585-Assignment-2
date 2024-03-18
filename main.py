@@ -1,10 +1,7 @@
-#This is a test commit
-
 from Classification import *
-import csv
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 def _outputLayer_error(y, yhat):
 	error = (yhat-y)*yhat*(1-yhat)
@@ -122,8 +119,6 @@ if __name__ == "__main__":
 	dataset = pd.read_csv('emails.csv', encoding='ISO-8859-1')
 	feature_functions = [contains_not, contains_security]
 	X, feature_names = bag_of_wordsify(dataset=dataset,feature_functions=feature_functions, max_token_features=50)
-
-	X
 
 	y = dataset['spam']
 

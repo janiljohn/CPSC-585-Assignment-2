@@ -4,19 +4,10 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords 
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, roc_curve, auc
-from sklearn.preprocessing import PolynomialFeatures
 import matplotlib.pyplot as plt
 
-#TEMP IMPORTS
-from sklearn.svm import SVC
 
-
-# BOW FILE 
 def bag_of_wordsify(dataset, feature_functions=[], max_token_features=1000):
     nltk.download('punkt')
     nltk.download('stopwords')
@@ -52,59 +43,6 @@ def bag_of_wordsify(dataset, feature_functions=[], max_token_features=1000):
                               ['custom_feature_' + str(i) for i in range(len(feature_functions))])
 
     return X, feature_names
-
-def split_dataset(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    return X_train, X_test, y_train, y_test
-
-
-# CLASSIFIER FILE
-def train_logistic_regression(X_train, y_train, poly_degree=1):
-    # Change input data to have polynomial features
-    poly = PolynomialFeatures(degree=poly_degree)
-    X_train_poly = poly.fit_transform(X_train)
-    
-    logistic_regression_classifier = LogisticRegression()
-    logistic_regression_classifier.fit(X_train_poly, y_train)
-    return logistic_regression_classifier, poly
-
-def train_naive_bayes(X_train, y_train, poly_degree=1):
-    # Change input data to have polynomial features
-    poly = PolynomialFeatures(degree=poly_degree)
-    X_train_poly = poly.fit_transform(X_train)
-    
-    naive_bayes_classifier = MultinomialNB()
-    naive_bayes_classifier.fit(X_train_poly, y_train)
-    return naive_bayes_classifier, poly
-
-def evaluate_classifier(classifier, poly, X_test, y_test, classifier_name):
-    X_test_poly = poly.transform(X_test)
-    
-    y_pred = classifier.predict(X_test_poly)
-    conf_matrix = confusion_matrix(y_test, y_pred)
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred, zero_division=0)
-    
-    # Calculate the ROC curve and AUC
-    if hasattr(classifier, "predict_proba"):
-        y_prob = classifier.predict_proba(X_test_poly)[:,1]
-        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
-        roc_auc = auc(fpr, tpr)
-        
-        plt.figure()
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.01, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(f'ROC Curve for {classifier_name}')
-        plt.legend(loc="lower right")
-        plt.savefig(f"ROC Curve-{classifier_name}.png")
-        plt.show()
-        
-    
-    return conf_matrix, accuracy, precision
 
 
 # MAIN FILE
